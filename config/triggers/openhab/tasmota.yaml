@@ -1,0 +1,41 @@
+---
+# Trigger configuration file. Actions executed with order in which they
+# appears in this file
+
+# Subscribe and lanuch addtional queries to gather some more information about devices
+# For tasmota commands, please visit:
+#   https://github.com/arendst/Sonoff-Tasmota/wiki/Commands
+- mqtt:
+    subscribe:
+      topic: 'stat/{{ trigger_topic[1] }}/RESULT'
+      type: 'json'
+      varname: 'module'
+    publish:
+      topic: 'cmnd/{{ trigger_topic[1] }}/module'
+      message: ''
+
+- mqtt:
+    subscribe:
+      topic: 'stat/{{ trigger_topic[1] }}/RESULT'
+      type: 'string'
+      varname: 'gpio'
+    publish:
+      topic: 'cmnd/{{ trigger_topic[1] }}/gpio'
+      message: ''
+
+# Be carefull with shell commands and always take into consideration system security
+- shell:
+    command: 'echo "Some example configuration"'
+    type: 'string'
+    varname: 'echo'
+
+- shell:
+    command: 'echo "You can use variables created by actions executed earlier, and even replace them with new values: {{ echo }}"'
+    type: 'string'
+    varname: 'echo'
+
+# Finally generate templates
+- template:
+    src: '{{ templates_dir }}/openhab/tasmota-{{ trigger_payload.Module|default("Generic")|pathescape|replace(" ", "_") }}.j2'
+    dest: '/etc/openhab2/items/{{ trigger_topic[1]|pathescape }}.mqr.items'
+

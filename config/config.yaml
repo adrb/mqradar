@@ -1,0 +1,46 @@
+---
+#
+# If You are unfamiliar with YAML syntax, please refer to:
+#   http://yaml.org/spec/1.2/spec.html 
+#
+
+# Number of threads processing triggers
+worker_threads: 10
+# Maximum number of trigger events, waiting to be processed by workers
+workers_max_queue: 100
+
+mqttbroker:
+  client_id: 'MQRadar'
+  credentials_file: './config/mqtt_creds.yaml'
+  host: 'localhost'
+  port: 1883
+
+  # TLS setup
+  use_tls: False
+#  tls_insecure: False
+#  port: 8883
+#  ca_certs: '/etc/ssl/certs/ca-certificates.crt'
+
+  subscribe:
+    - topic: 'tele/#'
+
+# Define custom variables for jinja2 templates
+vars:
+  triggers_dir: './config/triggers'
+  templates_dir: './config/templates'
+
+triggers:
+  - 
+    # Launch template provisioning when topic regexp matches
+    topic_pattern: '^tele/(.+)/INFO1$'
+    # Topic payload type, it can be "json" or "string"
+    payload_type: 'json'
+
+    # - trigger file path and trigger files supports jinja2 syntax
+    # - "topic_pattern" regex back references resolved as "{{ trigger_topic[N] }}" list, where N is from 0 to 99
+    # - you can get message payload content with "{{ trigger_payload }}" or in case of JSON "{{ trigger_payload.key }}"
+    # - destination files are overwriten without prompt
+    # - use "pathescape" filter to replace dots and slashes with dash, so malicious topic
+    #   won't overwrite your files
+    trigger: '{{ triggers_dir }}/openhab/tasmota.yaml'
+

@@ -1,0 +1,5 @@
+
+# {{ echo }}
+
+Switch {{ trigger_payload.Module|remove_punctation|replace(" ", "_") }}_{{ trigger_payload.FallbackTopic }} "{{ trigger_topic[1] }}" { mqtt=">[mqttbroker:cmnd/{{ trigger_topic[1] }}/POWER:command:*:default],<[mqttbroker:stat/{{ trigger_topic[1] }}/POWER:state:default]" }
+
