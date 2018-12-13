@@ -101,6 +101,7 @@ User=${RUNASUSER}
 Group=${RUNASGROUP}
 WorkingDirectory=${CONFDIR}
 ExecStart=${BINNAME}
+RestartSec=5
 Restart=on-failure
 
 [Install]
