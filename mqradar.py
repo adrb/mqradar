@@ -223,7 +223,7 @@ def mqtt_init(config, client_id):
 
 def parse_args():
   parser = argparse.ArgumentParser(description='MQtt Radar by adrian.brzezinski (at) adrb.pl')
-  parser.add_argument('-c', '--config', help='Yaml config file', default='config/config.yaml')
+  parser.add_argument('-c', '--config', help='Yaml config file', default='config.yaml')
   parser.add_argument('-d', '--debug', help='Set debugging level', action='count')
 
   return parser.parse_args()

@@ -11,7 +11,7 @@ workers_max_queue: 100
 
 mqttbroker:
   client_id: 'MQRadar'
-  credentials_file: './config/mqtt_creds.yaml'
+  credentials_file: 'mqtt_creds.yaml'
   host: 'localhost'
   port: 1883
 
@@ -26,8 +26,8 @@ mqttbroker:
 
 # Define custom variables for jinja2 templates
 vars:
-  triggers_dir: './config/triggers'
-  templates_dir: './config/templates'
+  triggers_dir: 'triggers'
+  templates_dir: 'templates'
 
 triggers:
   - 
