@@ -8,7 +8,7 @@ Triggers can execute one of three actions:
 
 - Publish messages and store possible reply with defined variable
 - Execute shell command, it's return value also can be stored as cutom variable
-- Generate Jinja2 template
+- Generate file from Jinja2 template
 
 Please read example configuration for more examples.
 
@@ -35,5 +35,6 @@ Full license text you can read on :
 
  - https://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-## Author: Adrian Brzezinski
+## Authors:
+Adrian Brzezinski <adrian.brzezinski at adrb.pl>
 
