@@ -5,34 +5,23 @@
 # Subscribe and lanuch addtional queries to gather some more information about devices
 # For tasmota commands, please visit:
 #   https://github.com/arendst/Sonoff-Tasmota/wiki/Commands
-- mqtt:
-    subscribe:
-      topic: 'stat/{{ trigger_topic[1] }}/RESULT'
-      type: 'json'
-      varname: 'module'
-    publish:
-      topic: 'cmnd/{{ trigger_topic[1] }}/module'
-      message: ''
+#
 
+# Network info
 - mqtt:
     subscribe:
-      topic: 'stat/{{ trigger_topic[1] }}/RESULT'
-      type: 'string'
-      varname: 'gpio'
+      topic: 'stat/{{ trigger_topic[1] }}/STATUS5'
+      type: 'json'
+      varname: 'status5'
     publish:
-      topic: 'cmnd/{{ trigger_topic[1] }}/gpio'
-      message: ''
+      topic: 'cmnd/{{ trigger_topic[1] }}/status'
+      message: '5'
 
 # Be carefull with shell commands and always take into consideration system security
 - shell:
-    command: 'echo "Some example configuration"'
+    command: 'echo "Last update: $(date)"'
     type: 'string'
-    varname: 'echo'
-
-- shell:
-    command: 'echo "You can use variables created by actions executed earlier, and even replace them with new values: {{ echo }}"'
-    type: 'string'
-    varname: 'echo'
+    varname: 'description'
 
 # Finally generate templates
 - template:

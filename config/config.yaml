@@ -32,7 +32,7 @@ vars:
 triggers:
   - 
     # Launch template provisioning when topic regexp matches
-    topic_pattern: '^tele/(.+)/INFO1$'
+    topic_pattern: '^tele/((.+)/(.+))/INFO1$'
     # Topic payload type, it can be "json" or "string"
     payload_type: 'json'
 
