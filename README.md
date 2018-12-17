@@ -2,7 +2,7 @@
 ## Introduction
 
 MQRadar is a MQTT protocol client, designed to discover and auto configure
-MQTT devices. In conjunction with linux Zeroconf capabilities (Ahahi and mDNS)
+MQTT devices. In conjunction with linux Zeroconf capabilities (Avahi and mDNS)
 it allows ad-hoc configuration of IoT devices.
 
 The principle of operation is rather simple, it connects to MQTT broker
@@ -27,8 +27,8 @@ home automotion system or MQTT device of any kind.
 For refrence about Tasmota firmware configuration please visit:
 https://github.com/arendst/Sonoff-Tasmota/wiki/Commands
 
-Also note that OpenHab2 needs 'MQTT Binding' add-on installed
-and proper setup in 'services/mqtt.cfg' file for MQTT broker connection.
+Also note that OpenHab2 needs "MQTT Binding" add-on installed
+and proper setup in "services/mqtt.cfg" file for MQTT broker connection.
 
 For other automation systems please refer to documentation and then
 write your own MQRadar triggers and templates.
