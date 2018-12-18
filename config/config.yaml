@@ -28,6 +28,7 @@ mqttbroker:
 vars:
   triggers_dir: 'triggers'
   templates_dir: 'templates'
+  items_dir: '/etc/openhab2/items'
 
 triggers:
   - 
@@ -43,4 +44,9 @@ triggers:
     # - use "pathescape" filter to replace dots and slashes with dash, so malicious topic
     #   won't overwrite your files
     trigger: '{{ triggers_dir }}/openhab/tasmota.yaml'
+
+  -
+    topic_pattern: '^tele/((.+)/(.+))/LWT$'
+    payload_type: 'string'
+    trigger: '{{ triggers_dir }}/openhab/tasmota_offline.yaml'
 

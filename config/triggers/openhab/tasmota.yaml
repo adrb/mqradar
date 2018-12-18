@@ -26,5 +26,5 @@
 # Finally generate templates
 - template:
     src: '{{ templates_dir }}/openhab/tasmota-{{ trigger_payload.Module|default("Generic")|pathescape|replace(" ", "_") }}.j2'
-    dest: '/etc/openhab2/items/{{ trigger_topic[1]|pathescape }}.mqr.items'
+    dest: '{{ items_dir }}/{{ trigger_topic[1]|pathescape }}.mqr.items'
 
