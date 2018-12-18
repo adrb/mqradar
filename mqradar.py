@@ -6,7 +6,7 @@
 # Requires:
 #   python-yaml, python-mosquitto, python-jinja2
 # 
-import sys, os, time, argparse, traceback
+import sys, os, time, argparse, traceback, pprint
 import string, re
 import yaml, json
 import mosquitto, ssl
@@ -62,14 +62,21 @@ class Worker(threading.Thread):
       raise ValueError('Variable "%s" is None' % trigger_action['subscribe']['varname']) 
 
     value = mqr_value(trigger_action['subscribe']['type'], self.payload)
+
+    print('INFO: Worker "%s" published MQTT "%s %s", recived: "%s %s"' %
+        (self.name, pub_topic, pub_msg, sub_topic, value))
+
     return ( trigger_action['subscribe']['varname'], value )
 
   def shell_process(self, j2dict, trigger_action):
 
     cmd = mqr_render_string(trigger_action['command'], j2dict)
 
-    value = commands.getoutput(cmd).decode('UTF-8')
+    value = commands.getoutput(cmd)
     value = mqr_value(trigger_action['type'], value)
+
+    print('INFO: Worker "%s" executed shell command: %s, output: %s' %
+        (self.name, cmd, value))
 
     return ( trigger_action['varname'], value)
 
@@ -79,14 +86,20 @@ class Worker(threading.Thread):
     template = mqr_render_file(src_file, j2dict)
     dest_file = mqr_render_string(trigger_action['dest'], j2dict)
 
-    print('INFO: Worker "%s" saving template "%s" as file "%s", current variables: %s' % (self.name, src_file, dest_file, j2dict))
+    print('INFO: Worker "%s" saving file "%s" from template "%s")\nvariables= %s\n' %
+        (self.name, dest_file, src_file, pprint.pformat(j2dict)))
+
     with open(dest_file, "w") as f:
       f.write(template)
+
+    if DEBUG > 1:
+      print('DEBUG: Worker "%s" saved template to file "%s":\n%s\n' %
+        (self.name, dest_file, template))
 
   def process(self, config, j2dict, trigger):
 
     for trigger_action in trigger:
-      if DEBUG: print('DEBUG: Worker "%s" processing: %s' % (self.name, trigger_action))
+      if DEBUG > 1: print('DEBUG: Worker "%s" processing...\ntrigger action= %s\n' % (self.name, pprint.pformat(trigger_action)))
 
       value = None
 
@@ -104,14 +117,14 @@ class Worker(threading.Thread):
         varname, value = self.shell_process(j2dict, trigger_action['shell'])
 
       if value is not None:
-        if DEBUG > 1: print('DEBUG: Worker "%s" receiving variable "%s": %s' % (self.name, varname, value))
+        if DEBUG > 2: print('DEBUG: Worker "%s" updating variable "%s" = "%s"' % (self.name, varname, value))
         j2dict.update( { varname: value } )
 
       if 'template' in trigger_action:
         self.template_process(j2dict, trigger_action['template'])
 
   def run(self):
-    if DEBUG > 2: print('DEBUG: Starting "%s"' % self.name)
+    if DEBUG > 2: print('DEBUG: Worker "%s": starting' % self.name)
 
     while not STOPWORKERS:
       WQ_LOCK.acquire()
@@ -125,8 +138,8 @@ class Worker(threading.Thread):
         try:
           self.process(config, j2dict, trigger)
         except Exception as e:
-          print('ERROR: %s: %s - config: "%s", j2dict: "%s",  trigger: "%s"'
-            % (self.name, e, str(config), str(j2dict), str(trigger)))
+          print('ERROR: Worker %s: %s\nconfig= %s\nvariables= %s\ntrigger= %s\n'
+            % (self.name, e, pprint.pformat(config), pprint.pformat(j2dict), pprint.pformat(trigger)))
           if DEBUG > 1: print('ERROR TRACE: %s' % traceback.format_exc())
 
       time.sleep(1)
@@ -169,7 +182,7 @@ def mqtt_on_connect(client, userdata, rc):
 
 def mqtt_on_message(client, userdata, message):
   if DEBUG > 1:
-    print('DEBUG: Received message - topic: "%s", payload: "%s"' % (message.topic, str(message.payload)))
+    print('DEBUG: Received message: %s %s' % (message.topic, str(message.payload)))
 
   for trigger in userdata['triggers']:
     tre = re.compile(trigger['topic_pattern'])
@@ -191,13 +204,16 @@ def mqtt_on_message(client, userdata, message):
         with open(trigger_file, 'r') as f:
           trigger_conf =  yaml.load(f)
 
+        print('INFO: Trigger "%s" fired by message: %s %s' % (trigger_file, message.topic, message.payload.decode('UTF-8')))
+
         # put trigger on the queue to process
         WQ_LOCK.acquire()
         WQ.put((userdata.copy(), j2dict.copy(), trigger_conf))
         WQ_LOCK.release()
 
       except Exception as e:
-        print('ERROR: %s for topic: "%s", payload: "%s", trigger: "%s",  ' % (e, str(message.topic), str(message.payload), str(trigger)))
+        print('ERROR: Processing MQTT message: %s\ntopic= %s\npayload= %s\ntrigger= %s\n'
+            % (e, str(message.topic), pprint.pformat(message.payload), pprint.pformat(trigger)))
         if DEBUG > 1: print('ERROR TRACE: %s' % traceback.format_exc())
         continue
 
