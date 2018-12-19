@@ -138,7 +138,7 @@ class Worker(threading.Thread):
         try:
           self.process(config, j2dict, trigger)
         except Exception as e:
-          print('ERROR: Worker %s: %s\nconfig= %s\nvariables= %s\ntrigger= %s\n'
+          print('ERROR: Worker "%s": %s\nconfig= %s\nvariables= %s\ntrigger= %s\n'
             % (self.name, e, pprint.pformat(config), pprint.pformat(j2dict), pprint.pformat(trigger)))
           if DEBUG > 1: print('ERROR TRACE: %s' % traceback.format_exc())
 
