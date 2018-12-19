@@ -105,7 +105,7 @@ class Worker(threading.Thread):
 
       if 'mqtt' in trigger_action:
         # Make new connection, so we don't interrupt main thread
-        mc = mqtt_init(config, "%s_%s" % (CONFIG['mqttbroker']['client_id'], self.name) );
+        mc = mqtt_init(config, "%s_%s" % (CONFIG['mqttbroker']['client_id'], self.name) )
         mc.on_message = self.mqtt_on_message
         mc.connect(config['mqttbroker']['host'], config['mqttbroker']['port'])
 
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     sys.exit(1)
 
   # Initialize mqtt connection
-  mc = mqtt_init(CONFIG, CONFIG['mqttbroker']['client_id']);
+  mc = mqtt_init(CONFIG, CONFIG['mqttbroker']['client_id'])
   mc.on_connect = mqtt_on_connect
   mc.on_message = mqtt_on_message
   mc.on_log = mqtt_on_log
