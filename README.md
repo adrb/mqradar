@@ -27,8 +27,8 @@ home automotion system or MQTT device of any kind.
 For refrence about Tasmota firmware configuration please visit:
 https://github.com/arendst/Sonoff-Tasmota/wiki/Commands
 
-Also note that OpenHab2 needs "MQTT Binding" add-on installed
-and proper setup in "services/mqtt.cfg" file for MQTT broker connection.
+Also note that OpenHab2 needs "MQTT Binding" add-on installed and configured
+connection to MQTT broker.
 
 For other automation systems please refer to documentation and then
 write your own MQRadar triggers and templates.
