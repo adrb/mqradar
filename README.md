@@ -41,7 +41,9 @@ Currently you can query REST apis via triggers curl commands.
 ## Example Mosquitto MQTT broker setup
 
 Basically if you aim at effortless IoT devices configuration, your MQTT server
-should allow connections without prompting for user name and passwords.
+should allow connections from any clients that doesn’t supply a username
+and passwords.
+
 Thus "allow_anonymous" should be set to "true". But of course you pay the price
 of lower security.
 
@@ -66,25 +68,26 @@ Users and password can be set using command:
 mosquitto_passwd /etc/mosquitto/password_file <put_your_username>
 ```
 
-Tasmota devices with default configuration trying to log into MQTT broker
-as "DVES_USER" with "DVES_PASS". So beside adding "admin" user, you may also
-consider setting "DVES_USER".
-
 Now the key part is proper setup in "acl_file". In the following example,
 we allowed Read/Write access for Tasmota devices only to topics needed for
 various status reports [2]. User admin is allowed to read or write any topic:
 
 ```
-# read for anonymous users
-pattern read cmnd/#
-# r/w for anonymous users
+# read for anonymous users (clients with no username)
+topic read cmnd/#
+# r/w for anonymous users (clients with no username)
 topic stat/#
-pattern tele/#
+topic tele/#
 
 # R/W to all topics for admin
 user admin
 topic #
 ```
+
+Tasmota devices with default configuration trying to log into MQTT broker
+as "DVES_USER" with "DVES_PASS". So beside adding "admin" user, you may also
+consider setting "DVES_USER". If this is the case then you have to precede
+each "topic" entry with "user DVES_USER" line.
 
 MQRadar should access MQTT broker as a "admin" user.
 Please note that MQTT passwords are sent in cleartext, so for admin user
