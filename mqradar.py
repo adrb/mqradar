@@ -89,12 +89,11 @@ class Worker(threading.Thread):
     print('INFO: Worker "%s" saving file "%s" from template "%s")\nvariables= %s\n' %
         (self.name, dest_file, src_file, pprint.pformat(j2dict)))
 
+    if DEBUG > 1:
+      print('DEBUG: Worker saving template:\n%s\n' % (self.name, template))
+
     with open(dest_file, "w") as f:
       f.write(template)
-
-    if DEBUG > 1:
-      print('DEBUG: Worker "%s" saved template to file "%s":\n%s\n' %
-        (self.name, dest_file, template))
 
   def process(self, config, j2dict, trigger):
 
@@ -137,8 +136,12 @@ class Worker(threading.Thread):
 
         try:
           self.process(config, j2dict, trigger)
+        except jinja2.TemplateNotFound as e:
+          print('ERROR: Worker "%s": Jinja2 TemplateNotFound: %s' % (self.name, e))
+        except IOError as e:
+          print('ERROR: Worker "%s": %s (%s) - %s' % (self.name, e.strerror, e.errno, e.filename))
         except Exception as e:
-          print('ERROR: Worker "%s": %s\nconfig= %s\nvariables= %s\ntrigger= %s\n'
+          print('ERROR: Worker "%s" generic exception: %s\nconfig= %s\nvariables= %s\ntrigger= %s\n'
             % (self.name, e, pprint.pformat(config), pprint.pformat(j2dict), pprint.pformat(trigger)))
           if DEBUG > 1: print('ERROR TRACE: %s' % traceback.format_exc())
 
