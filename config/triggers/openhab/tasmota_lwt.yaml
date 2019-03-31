@@ -1,0 +1,18 @@
+---
+
+- shell:
+    type: 'string'
+    varname: 'lwt'
+    command: |
+      FILE="{{items_dir}}/{{ trigger_topic[1]|pathescape }}.mqr.items"
+
+      # Remove offline devices
+      if [ -f "$FILE" ] && [ "{{ trigger_payload|pathescape }}" = "Offline" ]; then
+        mv -f "${FILE}" "${FILE}-offline"
+      fi
+
+      # Restore back devices that came back
+      if [ -f "${FILE}-offline" ] && [ "{{ trigger_payload|pathescape }}" = "Online" ]; then
+        mv -f "${FILE}-offline" "${FILE}"
+      fi
+

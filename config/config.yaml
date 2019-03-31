@@ -48,5 +48,5 @@ triggers:
   -
     topic_pattern: '^tele/((.+)/(.+))/LWT$'
     payload_type: 'string'
-    trigger: '{{ triggers_dir }}/openhab/tasmota_offline.yaml'
+    trigger: '{{ triggers_dir }}/openhab/tasmota_lwt.yaml'
 

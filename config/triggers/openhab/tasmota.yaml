@@ -28,14 +28,3 @@
     src: '{{ templates_dir }}/openhab/tasmota-{{ trigger_payload.Module|default("Generic")|pathescape|replace(" ", "_") }}.j2'
     dest: '{{ items_dir }}/{{ trigger_topic[1]|pathescape }}.mqr.items'
 
-# Remove offline file if exists
-- shell:
-    command: |
-      FILE="{{items_dir}}/{{ trigger_topic[1]|pathescape }}.mqr.items-offline"
-      if [ -f "$FILE" ] ; then
-        rm -f ${FILE}
-      fi
-
-    type: 'string'
-    varname: 'mv'
-
