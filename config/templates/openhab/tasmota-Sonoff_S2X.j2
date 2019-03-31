@@ -3,5 +3,5 @@
 // {{ description }}
 //
 
-Switch {{ status5.StatusNET.Hostname|remove_punctation|replace("-", "_") }} "{{ trigger_topic[3] }}" ({{ trigger_topic[2] }}, {{ trigger_payload.Module|remove_punctation|replace(" ", "_") }}) { mqtt=">[mqttbroker:cmnd/{{ trigger_topic[1] }}/POWER:command:*:default],<[mqttbroker:stat/{{ trigger_topic[1] }}/POWER:state:default]" }
+Switch {{ status5.StatusNET.Hostname|remove_punctation|replace("-", "_") }} "{{ trigger_topic[3] }}" ({{ trigger_topic[2] }}, {{ trigger_payload.Module|remove_punctation|replace(" ", "_") }}) { mqtt=">[mqttbroker:cmnd/{{ trigger_topic[1] }}/POWER1:command:*:default],<[mqttbroker:stat/{{ trigger_topic[1] }}/POWER1:state:default]" }
 
